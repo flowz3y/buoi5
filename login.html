@@ -1,0 +1,102 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Login</title>
+    <link href="login.css" rel="stylesheet">
+</head>
+
+<body>
+    <form id="MainForm">
+        <div>
+            <label>Email address</label>
+            <input type="email" id="emailInp">
+        </div>
+        <div>
+            <label>Password</label>
+            <input type="password" id="passwordInp">
+        </div>
+        <label id="forgotpassword" style="cursor: pointer;">forgot Password</label><br>
+        <button type="submit" class="loginbtn">Login</button><br>
+        <a href="register copy.html">Register</a>
+    </form>
+    <button id="googleLogin" class="GoogleLogin">Login with Google</button>
+    <script type="module">
+        // Import the functions you need from the SDKs you need
+        import { initializeApp } from "https://www.gstatic.com/firebasejs/11.4.0/firebase-app.js";
+        import { getDatabase, get, ref, child } from "https://www.gstatic.com/firebasejs/11.4.0/firebase-database.js";
+        import { getAuth, signInWithEmailAndPassword, sendPasswordResetEmail, GoogleAuthProvider, signInWithPopup } from "https://www.gstatic.com/firebasejs/11.4.0/firebase-auth.js";
+        // TODO: Add SDKs for Firebase products that you want to use
+        // https://firebase.google.com/docs/web/setup#available-libraries
+
+        // Your web app's Firebase configuration
+        const firebaseConfig = {
+            apiKey: "AIzaSyBOvsO_5Q3Z6jpGK60uhp-t3kixeibP49E",
+            authDomain: "sample-firebase-ai-app-aec0a.firebaseapp.com",
+            projectId: "sample-firebase-ai-app-aec0a",
+            storageBucket: "sample-firebase-ai-app-aec0a.firebasestorage.app",
+            messagingSenderId: "121612484960",
+            appId: "1:121612484960:web:93aa8b9582a6dbe658de05"
+        };
+
+        // Initialize Firebase
+        const app = initializeApp(firebaseConfig);
+        const db = getDatabase();
+        const provider = new GoogleAuthProvider()
+        const auth = getAuth(app);
+        const dbref = ref(db);
+
+        let EmailInp = document.getElementById('emailInp');
+        let PasswordInp = document.getElementById('passwordInp');
+        let MainForm = document.getElementById('MainForm');
+        let ForgotPassLabel = document.getElementById('forgotpassword')
+        let LoginGoogle = document.getElementById('googleLogin')
+        let SignInUser = event => {
+            event.preventDefault();
+
+            signInWithEmailAndPassword(auth, EmailInp.value.trim(), PasswordInp.value.trim())
+                .then((credentials) => {
+                    window.location.href = "testing.html"
+                    alert("Đăng nhập thành công")
+                })
+
+
+
+
+        }
+
+        let ForgotPassword = () => {
+            sendPasswordResetEmail(auth, EmailInp.value)
+                .then(() => {
+                    alert("A Password Reset Link has been sent to your email")
+                })
+                .catch((error) => {
+                    alert(error.message);
+                    console.log(error.code);
+                    console.log(error.message);
+                })
+
+        }
+
+        let LoginGoogleBtn = () => {
+            signInWithPopup(auth, provider)
+            .then((result) => {
+                const credential = GoogleAuthProvider.credentialFromResult(result)
+                const user = result.user
+                window.location.href = "testing.html"
+                alert("Dang nhap ko thanh cong bang google")
+            })
+            .catch((error) => {
+                const errorCode = error.code;
+                const errorMessage = error.message;
+            })
+        }
+        MainForm.addEventListener("submit", SignInUser);
+        ForgotPassLabel.addEventListener("click", ForgotPassword);
+        LoginGoogle.addEventListener("click", LoginGoogleBtn)
+    </script>
+</body>
+
+</html>

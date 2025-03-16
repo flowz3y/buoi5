@@ -1,0 +1,79 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Register</title>
+    <link href="register.css" rel="stylesheet">
+</head>
+<body>
+    <form id="MainForm">
+        <div>
+            <label>Email address</label>
+            <input type="email" id="emailInp">
+        </div>
+        <div>
+            <label>Password</label>
+            <input type="password" id="passwordInp">
+        </div>
+        <div>
+            <label>First name</label>
+            <input type="text" id="fnameInp">
+        </div>
+        <div>
+            <label>Last name</label>
+            <input type="text" id="lnameInp">
+        </div>
+        <button type="submit">Create New User</button>
+    </form>
+
+    <script type="module">
+        // Import the functions you need from the SDKs you need
+        import { initializeApp } from "https://www.gstatic.com/firebasejs/11.4.0/firebase-app.js";
+        import { getDatabase, set, ref } from "https://www.gstatic.com/firebasejs/11.4.0/firebase-database.js";
+        import { getAuth, createUserWithEmailAndPassword } from "https://www.gstatic.com/firebasejs/11.4.0/firebase-auth.js";
+        // TODO: Add SDKs for Firebase products that you want to use
+        // https://firebase.google.com/docs/web/setup#available-libraries
+      
+        // Your web app's Firebase configuration
+        const firebaseConfig = {
+          apiKey: "AIzaSyBOvsO_5Q3Z6jpGK60uhp-t3kixeibP49E",
+          authDomain: "sample-firebase-ai-app-aec0a.firebaseapp.com",
+          projectId: "sample-firebase-ai-app-aec0a",
+          storageBucket: "sample-firebase-ai-app-aec0a.firebasestorage.app",
+          messagingSenderId: "121612484960",
+          appId: "1:121612484960:web:93aa8b9582a6dbe658de05"
+        };
+      
+        // Initialize Firebase
+        const app = initializeApp(firebaseConfig);
+        const db = getDatabase();
+        const auth = getAuth(app);
+
+        let EmailInp = document.getElementById('emailInp');
+        let PasswordInp = document.getElementById('passwordInp');
+        let FnameInp = document.getElementById('fnameInp');
+        let LnameInp = document.getElementById('lnameInp');
+        let MainForm = document.getElementById('MainForm');
+
+        let RegisterUser = event => {
+            event.preventDefault();
+
+            createUserWithEmailAndPassword(auth, EmailInp.value.trim(), PasswordInp.value.trim())
+            .then((credentials) => {
+                set(ref(db, 'UsersAuthList/' + credentials.user.uid),{
+                    firstname: FnameInp.value.trim(),
+                    lastname: LnameInp.value.trim()
+                })
+            })
+            .catch((error) => {
+                alert(error.message);
+                console.log(error.code);
+                console.log(error.message);
+            })
+        }
+
+        MainForm.addEventListener("submit", RegisterUser);
+      </script>
+</body>
+</html>
